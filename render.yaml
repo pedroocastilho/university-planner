@@ -1,7 +1,7 @@
 services:
   - type: web
     name: university-planner
-    env: python
+    env: docker
     buildCommand: ""
     startCommand: python run.py
     envVars:
