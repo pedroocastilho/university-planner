@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Estudo</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        input, select, button {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .apagar {
+            background-color: #ff0040;
+            color: rgb(255, 255, 255);
+        }
+    </style>
+</head>
+<body>
+    <h2>Editar Estudo</h2>
+    <form method="POST">
+        <select name="materia" required>
+            <option value="Terapéutica y Toxicología" {% if estudo.materia == "Terapéutica y Toxicología" %}selected{% endif %}>Terapéutica y Toxicología</option>
+            <option value="Semiología Médica" {% if estudo.materia == "Semiología Médica" %}selected{% endif %}>Semiología Médica</option>
+            <option value="Semiología Quirúrgica" {% if estudo.materia == "Semiología Quirúrgica" %}selected{% endif %}>Semiología Quirúrgica</option>
+            <option value="Traumatología" {% if estudo.materia == "Traumatología" %}selected{% endif %}>Traumatología</option>
+            <option value="Patología Quirúrgica" {% if estudo.materia == "Patología Quirúrgica" %}selected{% endif %}>Patología Quirúrgica</option>
+            <option value="Ginecología y Obstetricia" {% if estudo.materia == "Ginecología y Obstetricia" %}selected{% endif %}>Ginecología y Obstetricia</option>
+            <option value="Oftalmología" {% if estudo.materia == "Oftalmología" %}selected{% endif %}>Oftalmología</option>
+        </select>
+
+        <input type="date" name="data" value="{{ estudo.data }}" required>
+
+        <select name="categoria" required>
+            <option value="Prova" {% if estudo.categoria == "Prova" %}selected{% endif %}>Prova</option>
+            <option value="Aulas" {% if estudo.categoria == "Aulas" %}selected{% endif %}>Aulas</option>
+            <option value="Atendimento" {% if estudo.categoria == "Atendimento" %}selected{% endif %}>Atendimento</option>
+            <option value="Academia" {% if estudo.categoria == "Academia" %}selected{% endif %}>Academia</option>
+            <option value="Pessoal" {% if estudo.categoria == "Pessoal" %}selected{% endif %}>Pessoal</option>
+        </select>
+
+        <button type="submit">Salvar</button>
+    </form>
+
+    <form method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este registro?');">
+        <input type="hidden" name="deletar" value="1">
+        <button type="submit" class="apagar">Apagar</button>
+    </form>
+
+    <a href="{{ url_for('planner.index') }}">← Voltar</a>
+</body>
+</html>

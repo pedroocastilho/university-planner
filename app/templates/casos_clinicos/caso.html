@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ materia }} - Caso {{ idx + 1 }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff7f9;
+            padding: 40px 20px;
+            max-width: 700px;
+            margin: auto;
+            color: #333;
+        }
+
+        h2 {
+            color: #c24c73;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        form {
+            animation: fadeIn 0.5s ease;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .opcao {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        .opcao label {
+            display: block;
+            padding: 14px 16px;
+            background-color: #ffe9f0;
+            border-radius: 10px;
+            border: 2px solid #f3c6d6;
+            transition: background-color 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .opcao label:hover {
+            background-color: #ffd9e6;
+            transform: scale(1.01);
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .botao {
+            background: #d76d93;
+            color: white;
+            border: none;
+            padding: 14px 26px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .botao:hover {
+            background: #c15b81;
+        }
+
+        .resposta {
+            padding: 20px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 2px solid #f3c6d6;
+            margin-top: 40px;
+            animation: fadeIn 0.5s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .acertou {
+            color: green;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .errou {
+            color: #d10030;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .resumo-final {
+            margin-top: 30px;
+            padding: 16px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            color: #444;
+        }
+
+        .resposta strong {
+            display: block;
+            margin-top: 12px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <h2>{{ materia }} — Caso {{ idx + 1 }}</h2>
+
+    <form method="post">
+        <p>{{ caso.pergunta }}</p>
+        {% for opcao in caso.opcoes %}
+        <div class="opcao">
+            <label>
+                <input type="radio" name="resposta" value="{{ loop.index0 }}" required>
+                {{ opcao }}
+            </label>
+        </div>
+        {% endfor %}
+        <button type="submit" class="botao">Responder</button>
+    </form>
+
+    {% if mostrar_explicacao %}
+    <div class="resposta">
+        {% if acertou %}
+            <p class="acertou">✅ ¡Respuesta correcta!</p>
+        {% else %}
+            <p class="errou">❌ Respuesta incorrecta.</p>
+            <strong>Respuesta correcta:</strong> {{ caso.opcoes[correta] }}
+        {% endif %}
+        <strong>Explicación:</strong> {{ explicacao }}
+
+        {% if tem_mais %}
+            <a class="botao" href="{{ url_for('casos.caso', materia=materia, idx=idx+1) }}">Siguiente caso</a>
+        {% else %}
+            <a class="botao" href="{{ url_for('casos.selecionar_materia') }}">Volver al menú</a>
+        {% endif %}
+
+        {% if resumo_final %}
+        <div class="resumo-final">
+            <p><strong>Resumen final:</strong></p>
+            <p>✅ Correctas: {{ total_acertos }}<br>❌ Incorrectas: {{ total_erros }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>

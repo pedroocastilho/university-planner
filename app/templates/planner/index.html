@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Planeador Académico Médico</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
+    <style>
+        body {
+            background-color: #fff6f8;
+            font-family: 'Segoe UI', sans-serif;
+            color: #333;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #d65c90;
+            margin-bottom: 30px;
+        }
+
+        form {
+            max-width: 650px;
+            margin: 15px auto;
+            padding: 25px;
+            border-radius: 12px;
+            background: #ffe9f0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        select, input[type="date"] {
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        button {
+            padding: 12px 22px;
+            background-color: #d65c90;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #c04b7f;
+        }
+
+        #calendar {
+            max-width: 1000px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .fc-event-title {
+            white-space: normal !important;
+        }
+
+        .fc-event-past {
+            background-color: #d4d4d4 !important;
+            border: none !important;
+            color: #555 !important;
+        }
+
+        .voltar {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .voltar button {
+            background-color: #ccc;
+            color: #333;
+        }
+
+        #botao-flutuante {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #d65c90;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        #botao-flutuante:hover {
+            background-color: #c04b7f;
+        }
+
+        @media (max-width: 768px) {
+            form {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #botao-flutuante {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 18px;
+            }
+
+            #calendar {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Planeador Académico Médico</h1>
+
+    <form method="GET" action="{{ url_for('planner.index') }}">
+        <select name="materia">
+            <option value="">Todas las materias</option>
+            {% for materia in materias %}
+                <option value="{{ materia }}">{{ materia }}</option>
+            {% endfor %}
+        </select>
+        <input type="date" name="data">
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <form method="POST" action="{{ url_for('planner.index') }}" id="form-agregar">
+        <select name="categoria" id="categoria" required onchange="ajustarCampos()">
+            <option value="" disabled selected>Categoria</option>
+            <option value="Prova">Prova</option>
+            <option value="Aula">Aula</option>
+            <option value="Atendimento">Atendimento</option>
+            <option value="Academia">Academia</option>
+            <option value="Pessoal">Pessoal</option>
+        </select>
+
+        <select name="materia" id="campoMateria">
+            <option value="" disabled selected>Matéria</option>
+            <option value="Terapéutica y Toxicología">Terapéutica y Toxicología</option>
+            <option value="Semiología Médica">Semiología Médica</option>
+            <option value="Semiología Quirúrgica">Semiología Quirúrgica</option>
+            <option value="Traumatología">Traumatología</option>
+            <option value="Patología Quirúrgica">Patología Quirúrgica</option>
+            <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
+            <option value="Oftalmología">Oftalmología</option>
+        </select>
+
+        <input type="date" name="data" required>
+        <button type="submit">Agregar</button>
+    </form>
+
+    <div id="calendar"></div>
+
+    <div class="voltar">
+        <a href="{{ url_for('home') }}">
+            <button>Volver al menú principal</button>
+        </a>
+    </div>
+
+    <button id="botao-flutuante" onclick="rolarParaFormulario()">+ Agregar Actividad</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            ajustarCampos();
+
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                events: [
+                    {% for item in dados %}
+                    {
+                        title: {{ (item.materia ~ ' – ' ~ item.categoria)|tojson }},
+                        start: {{ item.data|tojson }},
+                        url: {{ url_for("planner.editar", id=item.id)|tojson }},
+                        color: {{ item.cor|tojson }}
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                        info.jsEvent.preventDefault();
+                    }
+                }
+            });
+            calendar.render();
+        });
+
+        function ajustarCampos() {
+            const categoria = document.getElementById("categoria").value;
+            const campoMateria = document.getElementById("campoMateria");
+
+            if (categoria === "Prova" || categoria === "Aula") {
+                campoMateria.style.display = "block";
+                campoMateria.setAttribute("required", "required");
+            } else {
+                campoMateria.style.display = "none";
+                campoMateria.removeAttribute("required");
+            }
+        }
+
+        function rolarParaFormulario() {
+            const form = document.getElementById("form-agregar");
+            form.scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
+</body>
+</html>

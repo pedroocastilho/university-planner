@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Casos Clínicos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff9fb;
+            color: #333;
+        }
+
+        h2 {
+            color: #c44d76;
+        }
+
+        .boton {
+            display: block;
+            margin: 15px 0;
+            padding: 12px;
+            border: none;
+            background-color: #c44d76;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .boton:hover {
+            background-color: #b33e68;
+        }
+
+        .resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .correcto {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .incorrecto {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .explicacion {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+        }
+
+        .opcion {
+            margin-bottom: 10px;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 30px;
+            background-color: #ccc;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .volver:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <h2>Simulador de Casos Clínicos</h2>
+
+    {% if materias %}
+        <p>Seleccione una materia para comenzar:</p>
+        <ul>
+            {% for m in materias %}
+                <li><a class="boton" href="{{ url_for('casos.iniciar_simulado') }}?materia={{ m }}">{{ m }}</a></li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('home') }}" class="volver">Volver al menú principal</a>
+
+    {% elif finalizado %}
+        <h3>Simulación finalizada para {{ materia }}</h3>
+        <a class="boton" href="{{ url_for('casos.selecionar_materia') }}">Volver al simulador</a>
+        <a href="{{ url_for('home') }}" class="volver">Volver al menú principal</a>
+
+    {% else %}
+        <h3>{{ materia }}</h3>
+        <p><strong>Pregunta {{ idx + 1 }}:</strong> {{ pregunta.pergunta }}</p>
+
+        {% for opcion in pregunta.opcoes %}
+            <form method="get">
+                <input type="hidden" name="materia" value="{{ materia }}">
+                <input type="hidden" name="idx" value="{{ idx }}">
+                <input type="hidden" name="seleccion" value="{{ loop.index0 }}">
+                <button type="submit" class="boton">{{ opcion }}</button>
+            </form>
+        {% endfor %}
+
+        {% if resultado is not none %}
+            <div class="resultado {{ 'correcto' if resultado else 'incorrecto' }}">
+                {% if resultado %}✅ Correcto{% else %}❌ Incorrecto{% endif %}
+                <div class="explicacion">Explicación: {{ explicacion }}</div>
+                <a class="boton" href="?materia={{ materia }}&idx={{ idx + 1 }}">Siguiente</a>
+            </div>
+        {% endif %}
+
+        <a href="{{ url_for('home') }}" class="volver">Volver al menú principal</a>
+    {% endif %}
+</body>
+</html>

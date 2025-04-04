@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: university-planner
+    env: python
+    buildCommand: ""
+    startCommand: python run.py
+    envVars:
+      - key: FLASK_ENV
+        value: production

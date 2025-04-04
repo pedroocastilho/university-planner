@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>University Planner</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icons/icon_192x192.png">
+    <meta name="theme-color" content="#d76d93">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="University Planner">
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/static/serviceWorker.js")
+                .then(() => console.log("✅ Service Worker registrado"));
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fff9fa;
+            font-family: 'Inter', sans-serif;
+            padding: 50px 20px;
+            text-align: center;
+            color: #4a4a4a;
+        }
+
+        h1 {
+            color: #d76d93;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .card {
+            background-color: #ffeef2;
+            border-radius: 16px;
+            padding: 30px 25px;
+            width: 280px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #c24c73;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #d76d93;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .card a:hover {
+            background-color: #c15b81;
+        }
+    </style>
+</head>
+<body>
+    <h1>University Planner</h1>
+    <p>Seleccione un módulo para comenzar:</p>
+
+    <div class="cards">
+        <div class="card">
+            <h3>📅 Planeador Académico</h3>
+            <p>Organiza tus materias, temas y fechas de examen con un calendario inteligente.</p>
+            <a href="/planner">Acceder</a>
+        </div>
+
+        <div class="card">
+            <h3>🧠 Reconocimiento de Texto Médico</h3>
+            <p>Sube una imagen y recibe explicaciones y traducción automática de términos médicos.</p>
+            <a href="/ocr">Acceder</a>
+        </div>
+
+        <div class="card">
+            <h3>🩺 Simulador de Casos Clínicos</h3>
+            <p>Resuelve casos reales de tu carrera y obtén feedback inmediato.</p>
+            <a href="/casos">Acceder</a>
+        </div>
+    </div>
+</body>
+</html>
