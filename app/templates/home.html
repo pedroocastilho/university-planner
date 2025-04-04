@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#d76d93">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="University Planner">
+    <link rel="apple-touch-startup-image" href="/static/icons/icon_512x512.png">
     <script>
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/static/serviceWorker.js")
@@ -22,6 +23,41 @@
             padding: 50px 20px;
             text-align: center;
             color: #4a4a4a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Splash */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background-color: #fff9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            font-family: 'Inter', sans-serif;
+            transition: opacity 0.5s ease;
+        }
+
+        #splash-screen img {
+            width: 80px;
+            animation: pulse 1.2s infinite ease-in-out;
+        }
+
+        #splash-screen p {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #d76d93;
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.6; }
         }
 
         h1 {
@@ -40,6 +76,16 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card {
@@ -49,11 +95,14 @@
             width: 280px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             text-align: center;
-            transition: transform 0.2s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
         }
 
         .card h3 {
@@ -74,35 +123,99 @@
             text-decoration: none;
             border-radius: 8px;
             font-weight: bold;
+            position: relative;
+            overflow: hidden;
         }
 
         .card a:hover {
             background-color: #c15b81;
         }
+
+        .card a::after {
+            content: "";
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            transform: scale(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .card a:active::after {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(2);
+            opacity: 1;
+            transition: transform 0.5s, opacity 0.5s;
+        }
+
+        footer {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 90%;
+                max-width: 320px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>University Planner</h1>
-    <p>Seleccione un módulo para comenzar:</p>
+    <!-- Splash -->
+    <div id="splash-screen">
+        <img src="/static/icons/icon_192x192.png" alt="University Planner">
+        <p>Carregando...</p>
+    </div>
 
-    <div class="cards">
-        <div class="card">
-            <h3>📅 Planeador Académico</h3>
-            <p>Organiza tus materias, temas y fechas de examen con un calendario inteligente.</p>
-            <a href="/planner">Acceder</a>
-        </div>
+    <div>
+        <h1>University Planner</h1>
+        <p>Selecione um módulo para começar:</p>
 
-        <div class="card">
-            <h3>🧠 Reconocimiento de Texto Médico</h3>
-            <p>Sube una imagen y recibe explicaciones y traducción automática de términos médicos.</p>
-            <a href="/ocr">Acceder</a>
-        </div>
+        <div class="cards">
+            <div class="card">
+                <h3>📅 Planejador Acadêmico</h3>
+                <p>Organize suas matérias, categorias e datas com um calendário inteligente.</p>
+                <a href="/planner">Acessar</a>
+            </div>
 
-        <div class="card">
-            <h3>🩺 Simulador de Casos Clínicos</h3>
-            <p>Resuelve casos reales de tu carrera y obtén feedback inmediato.</p>
-            <a href="/casos">Acceder</a>
+            <div class="card">
+                <h3>🧠 Reconhecimento de Texto Médico</h3>
+                <p>Envie uma imagem ou digite algo e veja explicações automáticas.</p>
+                <a href="/ocr">Acessar</a>
+            </div>
+
+            <div class="card">
+                <h3>🩺 Simulador de Casos Clínicos</h3>
+                <p>Responda casos de sua faculdade e veja o resultado instantâneo.</p>
+                <a href="/casos">Acessar</a>
+            </div>
         </div>
     </div>
+
+    <footer>
+        Feito com amor para Poliana 💖
+    </footer>
+
+    <script>
+        window.addEventListener('load', function () {
+            const splash = document.getElementById('splash-screen');
+    
+            // Tempo mínimo de exibição (ex: 1500ms = 1.5s)
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }, 1500);
+        });
+    </script>
 </body>
 </html>
