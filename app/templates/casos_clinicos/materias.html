@@ -37,8 +37,8 @@
             font-size: 16px;
             margin-bottom: 15px;
         }
-        .materia-card form {
-            margin: 0;
+        .materia-card a {
+            text-decoration: none;
         }
         .materia-card button {
             background-color: #d65f92;
@@ -75,9 +75,9 @@
         {% for materia in materias %}
             <div class="materia-card">
                 <h2>{{ materia }}</h2>
-                <form action="{{ url_for('casos.caso', materia=materia, idx=0) }}" method="get">
-                    <button type="submit">Comenzar</button>
-                </form>
+                <a href="{{ url_for('casos.iniciar_simulado') }}?materia={{ materia }}">
+                    <button>Comenzar</button>
+                </a>
             </div>
         {% endfor %}
     </div>

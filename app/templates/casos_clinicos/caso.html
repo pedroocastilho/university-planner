@@ -147,7 +147,7 @@
         {% if tem_mais %}
             <a class="botao" href="{{ url_for('casos.caso', materia=materia, idx=idx+1) }}">Siguiente caso</a>
         {% else %}
-            <a class="botao" href="{{ url_for('casos.selecionar_materia') }}">Volver al menú</a>
+            <a class="botao" href="{{ url_for('casos.resultado_final') }}">Ver resultado final</a>
         {% endif %}
 
         {% if resumo_final %}
